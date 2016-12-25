@@ -24,7 +24,7 @@ public class Playfield : MonoBehaviour {
 
     void Start()
     {
-        ResetToTestDefault();
+        SetToCircle();
     }
 
     public void ResetToTestDefault()
