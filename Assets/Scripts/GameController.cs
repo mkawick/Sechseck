@@ -11,6 +11,7 @@ public class GameController : MonoBehaviour {
     public int playerTurn = 0;
     //public GUIText whichPlayerText;
     public Text whichPlayerText;
+    public Canvas playersTurnCanvas;
 
     // Use this for initialization
     void Start () {
@@ -77,6 +78,16 @@ public class GameController : MonoBehaviour {
     public void NextPlayer()
     {
         SetCurrentPlayer(playerTurn==0?1:0);
+    }
+    public void OnEndTurn()
+    {
+        if (playersTurnCanvas)
+        {
+            YourTurnTransition trans = playersTurnCanvas.GetComponent<YourTurnTransition>() as YourTurnTransition;
+            trans.Show();
+        }
+        // AI decides on where to play
+        //iTween.MoveTo(gameObject, iTween.Hash("y", 0, "delay", 0.2, "time", 1.2, "easetype", iTween.EaseType.easeOutBounce));
     }
     public void SetCurrentPlayer(int index)
     {

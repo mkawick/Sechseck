@@ -6,14 +6,14 @@ using UnityEngine;
 public class ClickAndDragPanel : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHandler
 {
     public GameController gameController;
-    [SerializeField]
+   // [SerializeField]
     Vector2 startPoint;
 
-    [SerializeField]
+   // [SerializeField]
     Vector2 endPoint;
 
-    [SerializeField]
-    bool drag = false;
+   // [SerializeField]
+    bool drag;
 
     //float
 
