@@ -6,6 +6,7 @@ using System;
 public class HexTile : MonoBehaviour {
 
     private int x, y;
+    private int strategicValue;
     public GameObject tokenObj;
     GameObject createdToken;
     
@@ -103,6 +104,24 @@ public class HexTile : MonoBehaviour {
             if (cfl)
                 cfl.Init(value);
         }
+        strategicValue = value;
+    }
+    public int GetStrategicValue()
+    {
+        return strategicValue;
+    }
+
+    public int Compare(HexTile rhs)
+    {
+        if(strategicValue < rhs.GetStrategicValue())
+        {
+            return -1;
+        }
+        if (strategicValue > rhs.GetStrategicValue())
+        {
+            return 1;
+        }
+        return 0;
     }
 
     // Update is called once per frame
@@ -112,16 +131,22 @@ public class HexTile : MonoBehaviour {
 
     void OnMouseDown()
     {
-        CreateTokenObj(Color.white);
+        GameController gc = HexUtils.GetGameController();
+        int playerId = gc.GetCurrentPlayer();
+
+        if (playerId != (int)GameController.PlayerID.Player1)
+            return;
+        CreateTokenObj(Color.white, playerId);
+
+        gc.TransitionPlayerTurn();
     }
 
-    void CreateTokenObj(Color c)
+    public void CreateTokenObj(Color c, int playerId)
     {
         if (createdToken)
             Destroy(createdToken);
 
-        GameController gc = HexUtils.GetGameController();
-        playerOwnerId = gc.GetCurrentPlayer();
+        playerOwnerId = playerId;
 
         Vector3 pos = gameObject.transform.position;
         pos.y += 5.0f;

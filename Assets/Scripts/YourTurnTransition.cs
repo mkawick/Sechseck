@@ -16,6 +16,11 @@ public class YourTurnTransition : MonoBehaviour {
 		
 	}
 
+    public void SetAnnouncementText(string text)
+    {
+        Text textField = childCanvas.GetComponentInChildren<Text>();
+        textField.text = text;
+    }
     public void Show()
     {
         gameObject.SetActive(true);
@@ -36,6 +41,8 @@ public class YourTurnTransition : MonoBehaviour {
         childCanvas.GetComponent<Image>().CrossFadeAlpha(1.0f, fadeTime, false);
 
         yield return returnTime;
+
+        yield return returnTime;// pause
 
         textField.CrossFadeAlpha(0.0f, fadeTime, false);
         childCanvas.GetComponent<Image>().CrossFadeAlpha(0.0f, fadeTime, false);

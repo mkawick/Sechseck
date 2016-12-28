@@ -9,9 +9,18 @@ public class GameController : MonoBehaviour {
     public Playfield playField;
     public Camera mainCamera;
     public int playerTurn = 0;
+    bool hasAiDecisionBeenMadeYet = true;
     //public GUIText whichPlayerText;
     public Text whichPlayerText;
-    public Canvas playersTurnCanvas;
+
+    public Canvas announcementCanvas;
+
+    public enum PlayerID
+    {
+        Player1,
+        Player2,
+        NumPlayers
+    }
 
     // Use this for initialization
     void Start () {
@@ -20,7 +29,20 @@ public class GameController : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-	}
+        if (playerTurn == (int)PlayerID.Player2 && hasAiDecisionBeenMadeYet == false)
+        {
+            playField.EvaluateStrategicValue();
+            playField.AiPickATile(playerTurn);
+            if (playField.TestForFourInARow(playerTurn) == true)
+            {
+                SetupAnnouncement("You lose");
+            }
+            else 
+                TransitionPlayerTurn();
+        }
+
+        hasAiDecisionBeenMadeYet = true;
+    }
 
     public void OnExitButton()
     {
@@ -29,6 +51,32 @@ public class GameController : MonoBehaviour {
 #else
         Application.Quit();
 #endif
+    }
+
+    public void TransitionPlayerTurn()
+    {
+        if( playField.IsGameBoardFull())
+        {
+            SetupAnnouncement("Game is a draw");
+            SetCurrentPlayer((int)PlayerID.NumPlayers);
+        }
+        if (playField.TestForFourInARow(playerTurn) == true)
+        {
+            SetupAnnouncement("You win");
+            SetCurrentPlayer((int)PlayerID.NumPlayers);
+        }
+        else {
+
+            SetCurrentPlayer(playerTurn == 0 ? 1 : 0);
+
+            if (playerTurn == (int)PlayerID.Player2)
+                hasAiDecisionBeenMadeYet = false;
+        }
+        if (playField.IsGameBoardFull())
+        {
+            SetupAnnouncement("Game is a draw");
+            SetCurrentPlayer((int)PlayerID.NumPlayers);
+        }
     }
     public void OnResetButton()
     {
@@ -56,7 +104,7 @@ public class GameController : MonoBehaviour {
 
     public void OnFourInARow()
     {
-        playField.Setup4InARow(playerTurn);
+        playField.TestForFourInARow(playerTurn);
     }
 
     public void DragCamera( float delta)
@@ -81,13 +129,19 @@ public class GameController : MonoBehaviour {
     }
     public void OnEndTurn()
     {
-        if (playersTurnCanvas)
-        {
-            YourTurnTransition trans = playersTurnCanvas.GetComponent<YourTurnTransition>() as YourTurnTransition;
-            trans.Show();
-        }
+        SetupAnnouncement("Your turn");
         // AI decides on where to play
         //iTween.MoveTo(gameObject, iTween.Hash("y", 0, "delay", 0.2, "time", 1.2, "easetype", iTween.EaseType.easeOutBounce));
+    }
+
+    public void SetupAnnouncement(string text)
+    {
+        if (announcementCanvas)
+        {
+            YourTurnTransition trans = announcementCanvas.GetComponent<YourTurnTransition>() as YourTurnTransition;
+            trans.SetAnnouncementText("Your turn");
+            trans.Show();
+        }
     }
     public void SetCurrentPlayer(int index)
     {

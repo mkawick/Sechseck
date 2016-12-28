@@ -172,6 +172,30 @@ public class Playfield : MonoBehaviour {
         hexField.Clear();
     }
 
+    public void AiPickATile(int playerId)
+    {
+        var possibleHexes = new List<HexTile>();
+        foreach (GameObject obj in hexField)
+        {
+            Transform TileChildTransform = obj.transform.Find("HexTileChild");
+            if (TileChildTransform != null)
+            {
+                HexTile tile = TileChildTransform.GetComponent<HexTile>();
+                int ownerOfCurrentTile = tile.GetPlayerOwnerId();
+
+                if (ownerOfCurrentTile == HexUtils.InvalidPlayer)
+                {
+                    possibleHexes.Add(tile);
+                }
+            }
+        }
+        possibleHexes.Sort((x, y) => x.Compare(y) );
+
+        //return possibleHexes
+        int num = possibleHexes.Count;
+        possibleHexes[num-1].CreateTokenObj(Color.red, playerId);
+    }
+
     public void EvaluateStrategicValue()
     {
         GameController gc = HexUtils.GetGameController();
@@ -194,6 +218,25 @@ public class Playfield : MonoBehaviour {
                      return child;*/
             }
         }
+    }
+
+    public bool IsGameBoardFull()
+    {
+        foreach (GameObject obj in hexField)
+        {
+            Transform TileChildTransform = obj.transform.Find("HexTileChild");
+            if (TileChildTransform != null)
+            {
+                HexTile tile = TileChildTransform.GetComponent<HexTile>();
+                int ownerOfCurrentTile = tile.GetPlayerOwnerId();
+
+                if (ownerOfCurrentTile == HexUtils.InvalidPlayer)
+                {
+                    return false;
+                }
+            }
+        }
+        return true;
     }
 
     void EvaluateTileValueForAI(HexTile tile, int currentPlayerId)
@@ -264,8 +307,9 @@ public class Playfield : MonoBehaviour {
         tile.ShowStrategicEvaluationLabel(true);
     }
 
-    public void Setup4InARow(int currentPlayerId)
+    public bool TestForFourInARow(int currentPlayerId)
     {
+        bool didFindFourInARow = false;
         Clear4InARow();
         foreach (GameObject obj in hexField)
         {
@@ -280,9 +324,10 @@ public class Playfield : MonoBehaviour {
                     continue;
                 // now we know that we have a tile that could be part of four in a row.
                 //child.SelectRowItem(false);
-                WalkLinearlyToTryForFourInARow(child);
+                didFindFourInARow |= WalkLinearlyToTryForFourInARow(child);
             }
         }
+        return didFindFourInARow;
     }
 
     void RecursiveCountInDirection(HexTile tile, Playfield.Directions d, List<HexTile> lineOfTiles)
@@ -297,8 +342,9 @@ public class Playfield : MonoBehaviour {
         }
     }
 
-    void WalkLinearlyOppositeDirections(HexTile tile, Playfield.Directions d1, Playfield.Directions d2)
+    bool WalkLinearlyOppositeDirections(HexTile tile, Playfield.Directions d1, Playfield.Directions d2)
     {
+        bool FourInARowFound = false;
         List<HexTile> lineOfTiles = new List<HexTile>();
         lineOfTiles.Add(tile);
         RecursiveCountInDirection(tile, d1, lineOfTiles);
@@ -310,13 +356,17 @@ public class Playfield : MonoBehaviour {
             {
                 ht.SelectRowItem(true);
             }
+            FourInARowFound = true;
         }
+        return FourInARowFound;
     }
-    void WalkLinearlyToTryForFourInARow(HexTile tile)
+    bool WalkLinearlyToTryForFourInARow(HexTile tile)
     {
-        WalkLinearlyOppositeDirections(tile, Playfield.Directions.North, Playfield.Directions.South);
-        WalkLinearlyOppositeDirections(tile, Playfield.Directions.NorthEast, Playfield.Directions.SouthWest);
-        WalkLinearlyOppositeDirections(tile, Playfield.Directions.NorthWest, Playfield.Directions.SouthEast);
+        bool FourInARowFound;
+        FourInARowFound = WalkLinearlyOppositeDirections(tile, Playfield.Directions.North, Playfield.Directions.South);
+        FourInARowFound |= WalkLinearlyOppositeDirections(tile, Playfield.Directions.NorthEast, Playfield.Directions.SouthWest);
+        FourInARowFound |= WalkLinearlyOppositeDirections(tile, Playfield.Directions.NorthWest, Playfield.Directions.SouthEast);
+        return FourInARowFound;
     }
 
     public void Clear4InARow()
