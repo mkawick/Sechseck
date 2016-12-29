@@ -189,11 +189,11 @@ public class Playfield : MonoBehaviour {
                 }
             }
         }
-        possibleHexes.Sort((x, y) => x.Compare(y) );
+        possibleHexes.Sort((x, y) => { if (x.GetStrategicValue() > y.GetStrategicValue()) return -1; else return 0; } );
 
         //return possibleHexes
         int num = possibleHexes.Count;
-        possibleHexes[num-1].CreateTokenObj(Color.red, playerId);
+        possibleHexes[0].CreateTokenObj(Color.red, playerId);
     }
 
     public void EvaluateStrategicValue()

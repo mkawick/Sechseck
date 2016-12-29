@@ -84,6 +84,7 @@
     <Compile Include="Assets\Scripts\CameraFacingLabel.cs" />
     <Compile Include="Assets\Scripts\ClickAndDragPanel.cs" />
     <Compile Include="Assets\Scripts\GameController.cs" />
+    <Compile Include="Assets\Scripts\GameStateManager.cs" />
     <Compile Include="Assets\Scripts\HexTile.cs" />
     <Compile Include="Assets\Scripts\HexUtils.cs" />
     <Compile Include="Assets\Scripts\Playfield.cs" />
