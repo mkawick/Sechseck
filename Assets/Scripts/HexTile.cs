@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 using System;
 
 public class HexTile : MonoBehaviour {
@@ -9,7 +10,9 @@ public class HexTile : MonoBehaviour {
     private int strategicValue;
     public GameObject tokenObj;
     GameObject createdToken;
-    
+    public GameObject floatAwayText;
+    private GameObject createdFloatAwayText;
+
     Color myColor;
     Playfield playfield;
 
@@ -139,6 +142,13 @@ public class HexTile : MonoBehaviour {
         CreateTokenObj(Color.white, playerId);
 
         gc.TransitionPlayerTurn();
+
+        Vector3 pos = gameObject.transform.position;
+        pos.y -= 1.0f;
+        createdFloatAwayText = Instantiate(floatAwayText, pos, Quaternion.identity) as GameObject;
+        createdFloatAwayText.transform.SetParent( gameObject.transform );
+        createdFloatAwayText.SetActive(true);
+        createdFloatAwayText.GetComponent<FloaterText>().SetText(GetStrategicValue().ToString());
     }
 
     public void CreateTokenObj(Color c, int playerId)
@@ -151,7 +161,7 @@ public class HexTile : MonoBehaviour {
         Vector3 pos = gameObject.transform.position;
         pos.y += 5.0f;
         createdToken = Instantiate(tokenObj, pos, Quaternion.identity) as GameObject;
-        createdToken.transform.parent = gameObject.transform;
+        createdToken.transform.SetParent( gameObject.transform );
         Transform model = createdToken.transform.Find("Sphere");
 
         Renderer rend = model.gameObject.GetComponent<Renderer>();

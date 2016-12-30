@@ -83,6 +83,7 @@
   <ItemGroup>
     <Compile Include="Assets\Scripts\CameraFacingLabel.cs" />
     <Compile Include="Assets\Scripts\ClickAndDragPanel.cs" />
+    <Compile Include="Assets\Scripts\FloaterText.cs" />
     <Compile Include="Assets\Scripts\GameController.cs" />
     <Compile Include="Assets\Scripts\GameStateManager.cs" />
     <Compile Include="Assets\Scripts\HexTile.cs" />

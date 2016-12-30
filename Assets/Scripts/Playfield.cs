@@ -304,7 +304,11 @@ public class Playfield : MonoBehaviour {
                 value += 2;
 
         tile.SetStrategicEvaluationValue(value);
-        tile.ShowStrategicEvaluationLabel(true);
+
+        if (false) // global lookup
+        {
+            tile.ShowStrategicEvaluationLabel(true);
+        }
     }
 
     public bool TestForFourInARow(int currentPlayerId)
