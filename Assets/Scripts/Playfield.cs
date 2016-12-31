@@ -10,6 +10,7 @@ public class Playfield : MonoBehaviour {
     public bool showLabelsFlag;
     public bool showStrategicEvaluationLabelsFlag = false;
     public bool enableLinearMapFlag;
+    public PlayerScore playerStats;
 
     public enum Directions
     {
@@ -25,6 +26,7 @@ public class Playfield : MonoBehaviour {
     void Start()
     {
         SetToCircle();
+        playerStats.SetScore(0);
     }
 
     public void ResetToTestDefault()
@@ -384,6 +386,11 @@ public class Playfield : MonoBehaviour {
                 child.SelectRowItem(false);
             }
         }
+    }
+
+    public void UpdateScore( int value )
+    {
+        playerStats.AddScore(value);
     }
     // Update is called once per frame
     void Update () {

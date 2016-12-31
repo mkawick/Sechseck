@@ -143,14 +143,20 @@ public class HexTile : MonoBehaviour {
 
         gc.TransitionPlayerTurn();
 
+        int strategicValue = GetStrategicValue();
+        CreateFloaterText(strategicValue);
+        playfield.UpdateScore(strategicValue);
+    }
+
+    void CreateFloaterText(int value)
+    {
         Vector3 pos = gameObject.transform.position;
         pos.y -= 1.0f;
         createdFloatAwayText = Instantiate(floatAwayText, pos, Quaternion.identity) as GameObject;
-        createdFloatAwayText.transform.SetParent( gameObject.transform );
+        createdFloatAwayText.transform.SetParent(gameObject.transform);
         createdFloatAwayText.SetActive(true);
-        createdFloatAwayText.GetComponent<FloaterText>().SetText(GetStrategicValue().ToString());
+        createdFloatAwayText.GetComponent<FloaterText>().SetText(value.ToString());
     }
-
     public void CreateTokenObj(Color c, int playerId)
     {
         if (createdToken)
