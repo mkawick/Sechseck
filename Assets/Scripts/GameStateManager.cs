@@ -22,8 +22,8 @@ public class GameStateManager : MonoBehaviour {
     {
         Scene s = SceneManager.GetActiveScene();
         SceneManager.LoadScene("MainGameScene", LoadSceneMode.Single);
-        //s.
-       // SceneManager(s);
+        Scene sNow = SceneManager.GetActiveScene();
+
     }
 
     public void OnExitButton()

@@ -25,6 +25,10 @@ public class Playfield : MonoBehaviour {
 
     void Start()
     {
+        
+    }
+    public void Init(int boardIndex)
+    {
         SetToCircle();
         playerStats.SetScore(0);
     }
@@ -195,7 +199,8 @@ public class Playfield : MonoBehaviour {
 
         //return possibleHexes
         int num = possibleHexes.Count;
-        possibleHexes[0].CreateTokenObj(Color.red, playerId);
+        if(num>0)
+            possibleHexes[0].CreateTokenObj(Color.red, playerId);
     }
 
     public void EvaluateStrategicValue()

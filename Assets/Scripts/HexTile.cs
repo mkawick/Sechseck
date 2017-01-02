@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using System;
+using UnityEngine.EventSystems;
 
 public class HexTile : MonoBehaviour {
 
@@ -132,20 +133,27 @@ public class HexTile : MonoBehaviour {
 		
 	}
 
+    bool IsUIBlockingMouseClicks()
+    {
+        return !EventSystem.current.IsPointerOverGameObject();
+    }
     void OnMouseDown()
     {
-        GameController gc = HexUtils.GetGameController();
-        int playerId = gc.GetCurrentPlayer();
+        if (IsUIBlockingMouseClicks())
+        {
+            GameController gc = HexUtils.GetGameController();
+            int playerId = gc.GetCurrentPlayer();
 
-        if (playerId != (int)GameController.PlayerID.Player1)
-            return;
-        CreateTokenObj(Color.white, playerId);
+            if (playerId != (int)GameController.PlayerID.Player1)
+                return;
+            CreateTokenObj(Color.white, playerId);
 
-        gc.TransitionPlayerTurn();
+            gc.TransitionPlayerTurn();
 
-        int strategicValue = GetStrategicValue();
-        CreateFloaterText(strategicValue);
-        playfield.UpdateScore(strategicValue);
+            int strategicValue = GetStrategicValue();
+            CreateFloaterText(strategicValue);
+            playfield.UpdateScore(strategicValue);
+        }
     }
 
     void CreateFloaterText(int value)
