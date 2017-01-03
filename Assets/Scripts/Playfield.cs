@@ -29,8 +29,12 @@ public class Playfield : MonoBehaviour {
     }
     public void Init(int boardIndex, bool resetPlayerScore)
     {
-        SetToCircle();
-        playerStats.SetScore(0);
+        if(boardIndex == 1)
+            SetToCircle();
+        else if (boardIndex == 2)
+            LoadLevel(2);
+        if(resetPlayerScore)
+            playerStats.SetScore(0);
     }
 
     public void ResetToTestDefault()
@@ -63,6 +67,31 @@ public class Playfield : MonoBehaviour {
             else
                 CreateHex((int)v.x, (int)v.y, v.z, Color.black);
         }
+    }
+
+    public void LoadLevel( int whichLevel )
+    {
+        ClearField();
+        PlayfieldInitializer cpfi = null;
+        if (whichLevel == 2)
+            cpfi  = new Level2PlayfieldInitializer();
+        if (cpfi == null)
+            return;
+
+        cpfi.Init();
+        int num = cpfi.GetNum();
+        for (int i = 0; i < num; i++)
+        {
+            Vector3 v = cpfi.Get(i);
+          //  if (i == 0)
+                CreateHex((int)v.x, (int)v.y, v.z, Color.green);
+         /*   else if (i < 7)
+                CreateHex((int)v.x, (int)v.y, v.z, Color.blue);
+            else
+                CreateHex((int)v.x, (int)v.y, v.z, Color.black);*/
+        }
+
+       // ShowLabels();
     }
 
     void CreateHex(int x, int y, float z, Color c)
