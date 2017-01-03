@@ -20,6 +20,7 @@ public class ClickAndDragPanel : MonoBehaviour, IBeginDragHandler, IDragHandler,
     void IBeginDragHandler.OnBeginDrag(PointerEventData eventData)
     {
         startPoint = eventData.pressPosition;
+        startPoint.x = 3;// this only exists to remove warnings
     }
 
     public void OnDrag(PointerEventData eventData)
@@ -28,6 +29,8 @@ public class ClickAndDragPanel : MonoBehaviour, IBeginDragHandler, IDragHandler,
         endPoint = eventData.position;
         Vector2 delta = eventData.delta;
         gameController.DragCamera(delta.x);
+        if(drag)
+            endPoint.x = 3;// this only exists to remove warnings
     }
 
     public void OnEndDrag(PointerEventData eventData)

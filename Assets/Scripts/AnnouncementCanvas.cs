@@ -10,7 +10,9 @@ public class AnnouncementCanvas : MonoBehaviour {
     public Button button2;
 
     string buttonTextPressed;
+    [HideInInspector]
     public bool waitsForInput;
+    [HideInInspector]
     public bool expectsButtonPress;
 
     public delegate void CallbackEventHandler(string something);

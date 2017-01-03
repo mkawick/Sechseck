@@ -9,12 +9,18 @@ public class GameController : MonoBehaviour {
 
     public Playfield playField;
     public Camera mainCamera;
-    public int playerTurn = 0;
-    bool hasAiDecisionBeenMadeYet = true;
-    //public GUIText whichPlayerText;
+
     public Text whichPlayerText;
-    public GameStateManager gameStateManager;
     public Canvas announcementCanvas;
+
+    [HideInInspector]
+    public int playerTurn = 0;
+
+    [HideInInspector]
+    public int highestEarnedGameLevel = 1;
+
+    bool hasAiDecisionBeenMadeYet = true;
+    GameStateWaiting gameStateWait = GameStateWaiting.None;
 
     public enum PlayerID
     {
@@ -22,16 +28,23 @@ public class GameController : MonoBehaviour {
         Player2,
         NumPlayers
     }
+    public enum GameStateWaiting
+    {
+        None,
+        PlayerLostDecision,
+        PlayerWonDecision,
+        GameIsADraw
+    }
 
     // Use this for initialization
     void Start ()
     {
         UpdateWhichPlayerUI();
-        Init(1);
+        Init(highestEarnedGameLevel, true);
     }
-    public void Init(int whichBoardToLoad)
+    public void Init(int whichBoardToLoad, bool resetPlayerScore)
     {
-        playField.Init(whichBoardToLoad);
+        playField.Init(whichBoardToLoad, resetPlayerScore);
     }
 	
 	// Update is called once per frame
@@ -42,7 +55,12 @@ public class GameController : MonoBehaviour {
 
     public void OnExitButton()
     {
-        Scene s = SceneManager.GetActiveScene();
+        GoBackToOpeningScene();
+    }
+
+    void GoBackToOpeningScene()
+    {
+        //Scene s = SceneManager.GetActiveScene();
         SceneManager.LoadScene("OpeningScene", LoadSceneMode.Single);
     }
 
@@ -174,19 +192,22 @@ public class GameController : MonoBehaviour {
 
     public void PlayerLoses()
     {
-        SetupAnnouncement("You lose", "Continue", "Exit");
+        SetupAnnouncement("You lose", "Replay level", "Exit");
+        gameStateWait = GameStateWaiting.PlayerLostDecision;
     }
     public void PlayerWins()
     {
-        SetupAnnouncement("You win", "Test1", "Test2");
+        SetupAnnouncement("You win", "Next level", "Exit");
+        gameStateWait = GameStateWaiting.PlayerWonDecision;
     }
     public void PlayerHasATurn()
     {
-        SetupAnnouncement("Your turn", "Test3", "Test4");
+        //SetupAnnouncement("Your turn", "Test3", "Test4");
     }
     public void GameIsADraw()
     {
-        SetupAnnouncement("Game is a draw", "", "");
+        SetupAnnouncement("Game is a draw", "Replay level", "Exit");
+        gameStateWait = GameStateWaiting.GameIsADraw;
     }
     public void SetupAnnouncement(string text, string option1, string option2)
     {
@@ -215,9 +236,41 @@ public class GameController : MonoBehaviour {
     void OnAnnouncementClosed(string optionPressed)
     {
         AnnouncementCanvas trans = announcementCanvas.GetComponent<AnnouncementCanvas>() as AnnouncementCanvas;
-        if(trans)
+        if (trans)
         {
             trans.Callback -= OnAnnouncementClosed;
         }
+
+        switch (gameStateWait)
+        {
+            case GameStateWaiting.GameIsADraw:
+            case GameStateWaiting.PlayerLostDecision:
+                if (optionPressed == "Replay level")
+                {
+                    Init(highestEarnedGameLevel, false);
+                }
+                else if (optionPressed == "Exit")
+                {
+                    GoBackToOpeningScene();
+                }
+                break;
+            case GameStateWaiting.PlayerWonDecision:
+                if (optionPressed == "Next level")
+                {
+                    Init(++highestEarnedGameLevel, false);
+                }
+                else if(optionPressed == "Exit")
+                {
+                    GoBackToOpeningScene();
+                }
+                break;
+           /* case GameStateWaiting.PlayerLostDecision:
+                if (optionPressed == "")
+                {
+                    highestEarnedGameLevel++;
+                }
+                break;*/
+        }
+        gameStateWait = GameStateWaiting.None;
     }
 }

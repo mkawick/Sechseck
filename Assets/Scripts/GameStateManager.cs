@@ -20,9 +20,9 @@ public class GameStateManager : MonoBehaviour {
 
     public void OnStartGame()
     {
-        Scene s = SceneManager.GetActiveScene();
+        //Scene s = SceneManager.GetActiveScene();
         SceneManager.LoadScene("MainGameScene", LoadSceneMode.Single);
-        Scene sNow = SceneManager.GetActiveScene();
+        //Scene sNow = SceneManager.GetActiveScene();
 
     }
 

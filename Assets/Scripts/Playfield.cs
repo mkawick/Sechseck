@@ -27,7 +27,7 @@ public class Playfield : MonoBehaviour {
     {
         
     }
-    public void Init(int boardIndex)
+    public void Init(int boardIndex, bool resetPlayerScore)
     {
         SetToCircle();
         playerStats.SetScore(0);

@@ -15,7 +15,7 @@ public class FloaterText : MonoBehaviour {
     {
         if (!referenceCamera)
             referenceCamera = Camera.main;
-        Renderer rend = gameObject.GetComponent<Renderer>();
+        //Renderer rend = gameObject.GetComponent<Renderer>();
         //rend.material.SetColor("_Color", Color.green);
 
         //games
